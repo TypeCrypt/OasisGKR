@@ -1,42 +1,32 @@
 import java.math.BigInteger;
 
-public class FField {
+public class FField extends Number{
 
-    public BigInteger ff_order;
+    public BigInteger ff_prime;
+    public BigInteger ff_elem;
 
-}
-
-class eFField extends Number{
-
-    public FField eff_field;
-    public BigInteger eff_num;
-
-    public eFField (BigInteger num, FField ffield) {
-        eff_num = num.mod(ffield.ff_order);
-        eff_field = ffield;
+    public FField(BigInteger ff_p, BigInteger ff_e) {
+        this.ff_prime = ff_p;
+        this.ff_elem = ff_e.mod(ff_p);
     }
 
     @Override
     public int intValue() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public double doubleValue() {
-        // TODO Auto-generated method stub
-        return 0;
+        return ff_elem.intValue();
     }
 
     @Override
     public float floatValue() {
-        // TODO Auto-generated method stub
-        return 0;
+        return ff_elem.floatValue();
     }
 
     @Override
     public long longValue() {
-        // TODO Auto-generated method stub
-        return 0;
+        return ff_elem.longValue();
+    }
+
+    @Override
+    public double doubleValue() {
+        return ff_elem.doubleValue();
     }
 }
