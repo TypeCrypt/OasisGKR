@@ -2,6 +2,7 @@ import java.math.BigInteger;
 import java.util.Vector;
 
 import util.Tuple;
+import fields.Field;
 
 public class MLPoly implements Poly {
     
