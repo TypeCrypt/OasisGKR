@@ -1,3 +1,5 @@
-public class Poly {
-    
+import java.math.BigInteger;
+
+public interface Poly {
+
 }

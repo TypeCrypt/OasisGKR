@@ -12,8 +12,8 @@ public class Field {
     public BigInteger order;
     // public Poly characteristic_polynomial;
 
-    private BigInteger unit = new BigInteger("1");
-    private BigInteger zero = new BigInteger("0");
+    private final BigInteger unit = new BigInteger("1");
+    private final BigInteger zero = new BigInteger("0");
 
 
     // constructors
@@ -66,4 +66,6 @@ public class Field {
         // placeholder
         return unit;
     }
+
+    // Polynomial Arithmetic
 }
