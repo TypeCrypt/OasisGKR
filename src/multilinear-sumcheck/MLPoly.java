@@ -10,7 +10,7 @@ public class MLPoly implements Poly {
 
     public Integer var_no;
     public Field field;
-    
+
 
     /* Term representation: Each term will have an associated
      * binary string of length var_no. The ith bit acts as an 
@@ -33,5 +33,7 @@ public class MLPoly implements Poly {
         this.field = field;
         this.terms = terms;
     }
+
+    // Polynomial Evaluation
 }
 
