@@ -18,23 +18,32 @@ public class MLPoly implements Poly {
      * indicator as to whether the ith element is in that 
      * particular term or not. */
 
-    public Vector<Tuple<String, BigInteger>> terms;
+    public Vector<Tuple<Vector<Boolean>, BigInteger>> terms;
 
 
     // Constructors
 
-    public MLPoly(Integer var_no, Field field, Vector<Tuple<String, BigInteger>> terms) {
+    public MLPoly(Integer var_no, Field field, Vector<Tuple<Vector<Boolean>, BigInteger>> terms) {
         this.var_no = var_no;
         this.field = field;
         this.terms = terms;
     }
 
-    public MLPoly(Field field, Vector<Tuple<String, BigInteger>> terms) {
-        this.var_no = terms.firstElement().x.length();
+    public MLPoly(Field field, Vector<Tuple<Vector<Boolean>, BigInteger>> terms) {
+        this.var_no = terms.firstElement().x.size();
         this.field = field;
         this.terms = terms;
     }
 
-    // Polynomial Evaluation
+
+    // Identity checks
+
+    public Boolean is_monomial() {
+        return (this.terms.size() == 1);
+    }
+
+    public Boolean is_constant() {
+        return (this.is_monomial()) && !(this.terms.get(0).x.contains(true));
+    }
 }
 
