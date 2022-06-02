@@ -1,6 +1,9 @@
 package fields;
 
 import java.math.BigInteger;
+import java.util.Vector;
+
+import poly.UPoly;
 
 public class Field {
 
@@ -63,4 +66,10 @@ public class Field {
 
     
     // Polynomial Arithmetic
+
+    // public UPoly sum(UPoly u, UPoly v) throws Exception{
+    //     if (u.field.equals(v.field)) {
+    //         Vector<BigInteger> terms = new Vector<BigInteger>();
+    //     }
+    // }
 }

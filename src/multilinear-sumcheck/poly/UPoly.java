@@ -1,7 +1,8 @@
 package poly;
 
 import java.math.BigInteger;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 import fields.Field;
 
@@ -13,15 +14,15 @@ public class UPoly implements Poly {
     public Field field;
 
     
-    /* Term representation: ith bit of the n-bit vector represents
+    /* Term representation: ith bit of the n-bit ArrayList represents
      * the coefficient of x^n. */
 
-    public Vector<BigInteger> terms;
+    public ArrayList<BigInteger> terms;
 
 
     // Constructors
 
-    public UPoly(Field field, Vector<BigInteger> terms) {
+    public UPoly(Field field, ArrayList<BigInteger> terms) {
         this.field = field;
         this.terms = terms;
     }
@@ -48,6 +49,15 @@ public class UPoly implements Poly {
             }
         }
         return counter;
+    }
+
+    
+    // Evaluation
+    
+    public BigInteger evaluate(BigInteger b) {
+        return IntStream.range(0, this.degree())
+                        .mapToObj(i -> this.field.multiply(this.field.power(b, i), this.terms.get(i)))
+                        .reduce(this.field.zero, BigInteger::add);
     }
 
 }
