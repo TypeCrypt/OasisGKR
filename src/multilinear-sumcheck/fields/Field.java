@@ -44,20 +44,21 @@ public class Field {
         }
     }
     
-    public BigInteger power(BigInteger a) {
-        // placeholder
-        return zero;
+    public BigInteger power(BigInteger a, Integer b) {
+        return a.pow(b).mod(order);
     }
 
-
-    /* Implementation of the Itoh–Tsujii inversion algorithm. Reference:
-    https://en.wikipedia.org/wiki/Itoh%E2%80%93Tsujii_inversion_algorithm 
-    For prime fields, inversion can be accomplished through Fermat's 
-    Little Theorem, and the method will be overwritten for the subclass.*/
+    public BigInteger bool_mult(BigInteger a, Boolean b) {
+        if (b) {
+            return a;
+        }
+        else {
+            return zero;
+        }
+    }
 
     public BigInteger invert(BigInteger a) throws Exception {
-        // placeholder
-        return zero;
+        return a.modInverse(order);
     }
 
 
