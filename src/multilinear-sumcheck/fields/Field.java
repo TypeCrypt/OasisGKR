@@ -57,7 +57,7 @@ public class Field {
         }
     }
 
-    public BigInteger invert(BigInteger a) throws Exception {
+    public BigInteger invert(BigInteger a) {
         return a.modInverse(order);
     }
 
