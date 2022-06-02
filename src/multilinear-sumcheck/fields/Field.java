@@ -1,9 +1,8 @@
 package fields;
 
 import java.math.BigInteger;
-import java.util.Vector;
 
-import poly.UPoly;
+import exceptions.DivideByZeroException;
 
 public class Field {
 
@@ -21,10 +20,14 @@ public class Field {
     public final BigInteger zero = new BigInteger("0");
 
 
-    // constructors
+    // Basics
 
     public Field(BigInteger f_order) {
         this.order = f_order;
+    }
+
+    public Boolean equals(Field f) {
+        return (this.order == f.order);
     }
 
 
@@ -38,12 +41,12 @@ public class Field {
         return (a.multiply(b)).mod(order);
     }
 
-    public BigInteger divide(BigInteger a, BigInteger b) throws Exception {
+    public BigInteger divide(BigInteger a, BigInteger b) throws DivideByZeroException {
         if (!b.equals(zero)) {
             return multiply(a, invert(b));
         }
         else{
-            throw new Exception("Division by 0!");
+            throw new DivideByZeroException("Division by 0!");
         }
     }
     
