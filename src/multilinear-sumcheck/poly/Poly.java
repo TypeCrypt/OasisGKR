@@ -1,3 +1,5 @@
+package poly;
+
 public interface Poly {
     public Integer degree();
     public Integer size();
