@@ -36,7 +36,7 @@ public class Field {
     }
 
     public BigInteger divide(BigInteger a, BigInteger b) throws Exception {
-        if (b != zero) {
+        if (!b.equals(zero)) {
             return multiply(a, invert(b));
         }
         else{
