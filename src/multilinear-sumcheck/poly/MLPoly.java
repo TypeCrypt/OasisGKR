@@ -11,7 +11,7 @@ public class MLPoly implements Poly {
 
     // Public parameters: variable number and field
 
-    public Integer var_no;
+    public Integer varNo;
     public Field field;
 
 
@@ -26,13 +26,13 @@ public class MLPoly implements Poly {
     // Constructors
 
     public MLPoly(Integer var_no, Field field, ArrayList<Tuple<ArrayList<Boolean>, BigInteger>> terms) {
-        this.var_no = var_no;
+        this.varNo = var_no;
         this.field = field;
         this.terms = terms;
     }
 
     public MLPoly(Field field, ArrayList<Tuple<ArrayList<Boolean>, BigInteger>> terms) {
-        this.var_no = terms.get(0).x.size();
+        this.varNo = terms.get(0).x.size();
         this.field = field;
         this.terms = terms;
     }
