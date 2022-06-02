@@ -4,6 +4,7 @@ import java.math.BigInteger;
 
 public class Field {
 
+
     /* Generic finite field class. Gives the basic
     arithmetic operations and implements some essential
     algorithms required for field arithmetic. Each
@@ -12,10 +13,9 @@ public class Field {
 
     public BigInteger characteristic;
     public BigInteger order;
-    // public Poly characteristic_polynomial;
 
-    private final BigInteger unit = new BigInteger("1");
-    private final BigInteger zero = new BigInteger("0");
+    public final BigInteger unit = new BigInteger("1");
+    public final BigInteger zero = new BigInteger("0");
 
 
     // constructors
@@ -61,14 +61,6 @@ public class Field {
         return a.modInverse(order);
     }
 
-
-    /* Implementation of the Tonelli-Shanks algorithm. Reference:
-     https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm */
-
-    public BigInteger sqrt(BigInteger a) {
-        // placeholder
-        return unit;
-    }
-
+    
     // Polynomial Arithmetic
 }

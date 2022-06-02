@@ -45,5 +45,12 @@ public class MLPoly implements Poly {
     public Boolean is_constant() {
         return (this.is_monomial()) && !(this.terms.get(0).x.contains(true));
     }
+
+    
+    // Size checks
+
+    public Integer degree() {
+        
+    }
 }
 
