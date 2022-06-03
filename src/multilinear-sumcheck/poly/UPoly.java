@@ -92,4 +92,13 @@ public class UPoly implements Poly {
         }
     }
 
+    public UPoly multiply(UPoly u) throws FieldOrderException {
+        if (this.field.equals(u.field)){
+            // Implement FFT
+        }
+        else {
+            throw new FieldOrderException("Polynomials defined over different fields!");
+        }
+    }
+
 }

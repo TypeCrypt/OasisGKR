@@ -52,7 +52,18 @@ public class MLPoly implements Poly {
     // Size checks
 
     public Integer degree() {
-        
+        Integer counter1 = 0;
+
+        for (Tuple<ArrayList<Boolean>, BigInteger> i : this.terms) {
+            Integer counter2 = 0;
+            for (Boolean j : i.x) {
+                if (j.equals(true)) {
+                    counter2++;
+                }
+            }
+            counter1 = Math.max(counter1, counter2);
+        }
+        return counter1;
     }
 }
 
