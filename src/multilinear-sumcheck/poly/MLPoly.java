@@ -20,19 +20,19 @@ public class MLPoly implements Poly {
      * indicator as to whether the ith element is in that 
      * particular term or not. */
 
-    public ArrayList<Tuple<ArrayList<Boolean>, BigInteger>> terms;
+    public Tuple<ArrayList<Boolean>, BigInteger>[] terms;
 
 
     // Constructors
 
-    public MLPoly(Integer var_no, Field field, ArrayList<Tuple<ArrayList<Boolean>, BigInteger>> terms) {
+    public MLPoly(Integer var_no, Field field, Tuple<ArrayList<Boolean>, BigInteger>[]  terms) {
         this.varNo = var_no;
         this.field = field;
         this.terms = terms;
     }
 
-    public MLPoly(Field field, ArrayList<Tuple<ArrayList<Boolean>, BigInteger>> terms) {
-        this.varNo = terms.get(0).x.size();
+    public MLPoly(Field field, Tuple<ArrayList<Boolean>, BigInteger>[]  terms) {
+        this.varNo = terms[0].x.size();
         this.field = field;
         this.terms = terms;
     }
@@ -41,11 +41,11 @@ public class MLPoly implements Poly {
     // Identity checks
 
     public Boolean is_monomial() {
-        return (this.terms.size() == 1);
+        return (this.terms.length == 1);
     }
 
     public Boolean is_constant() {
-        return (this.is_monomial()) && !(this.terms.get(0).x.contains(true));
+        return (this.is_monomial()) && !(this.terms[0].x.contains(true));
     }
 
     
@@ -79,6 +79,14 @@ public class MLPoly implements Poly {
             counter1 += counter2;
         }
         return counter1;
+    }
+
+
+    // Evaluation
+
+    public BigInteger[] evaluate(BigInteger[] vector) {
+        BigInteger[] result = new BigInteger[this.terms.length];
+        for (Integer i; i<=)
     }
 }
 
