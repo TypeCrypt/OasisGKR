@@ -50,8 +50,8 @@ public class Field {
         }
     }
     
-    public BigInteger power(BigInteger a, Integer b) {
-        return a.pow(b).mod(order); // a.modPow(b, order);
+    public BigInteger power(BigInteger a, BigInteger b) {
+        return a.modPow(b, order); 
     }
 
     public BigInteger bool_mult(BigInteger a, Boolean b) {
