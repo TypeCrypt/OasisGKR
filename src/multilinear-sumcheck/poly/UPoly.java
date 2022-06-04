@@ -94,7 +94,20 @@ public class UPoly implements Poly {
 
     public UPoly multiply(UPoly u) throws FieldOrderException {
         if (this.field.equals(u.field)){
-            // Implement FFT
+            
+            // Naive O(n^2) multiplication for now, maybe FFT later?
+
+            ArrayList<BigInteger> multList = new ArrayList<BigInteger>();
+
+            for (Integer i=0; i <= this.degree() + u.degree(); i++) {
+                BigInteger sum = this.field.zero;
+                for (Integer j=0; j<=i; j++) {
+                    sum = this.field.add(sum, this.field.multiply(this.terms.get(j), u.terms.get(i-j)));
+                }
+                multList.add(sum);
+            }
+
+            return new UPoly(this.field, multList);
         }
         else {
             throw new FieldOrderException("Polynomials defined over different fields!");
