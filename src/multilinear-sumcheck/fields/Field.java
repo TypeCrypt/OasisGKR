@@ -59,7 +59,7 @@ public class Field {
             return a;
         }
         else {
-            return zero;
+            return unit;
         }
     }
 
