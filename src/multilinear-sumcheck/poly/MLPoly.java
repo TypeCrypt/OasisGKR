@@ -146,6 +146,8 @@ public class MLPoly implements Poly {
                 zero.add(unit);
                 unit = new BigInteger("1");
             }
+
+            return zero;
         }
     }
 
