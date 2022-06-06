@@ -1,100 +1,191 @@
 package poly;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-
-import util.Tuple;
-import fields.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MLPoly implements Poly {
-    
 
-    // Public parameters: variable number and field
-
+    // Initial Parameters
     public Integer varNo;
-    public Field field;
+    public BigInteger prime;
+    public HashMap<String, BigInteger> terms;
 
 
-    /* Term representation: Each term will have an associated
-     * binary string of length var_no. The ith bit acts as an 
-     * indicator as to whether the ith element is in that 
-     * particular term or not. */
+    // Constructor
+    public MLPoly(Integer v, BigInteger p, HashMap<String, BigInteger> t) throws Exception {
 
-    public ArrayList<Tuple<ArrayList<Boolean>, BigInteger>> terms;
+        // Check if terms are correctly defined
+        for (String i : t.keySet()) {
+            if (i.length() > varNo) {
+                throw new Exception("Incorrect variable number!");
+            }
+            if (t.get(i).compareTo(p) == 1) {
+                throw new Exception("Coefficients have to be smaller than the field size!");
+            }
+        }
 
-
-    // Constructors
-
-    public MLPoly(Integer var_no, Field field, ArrayList<Tuple<ArrayList<Boolean>, BigInteger>> terms) {
-        this.varNo = var_no;
-        this.field = field;
-        this.terms = terms;
+        // Initialize parameters
+        this.varNo = v;
+        this.prime = p;
+        this.terms = t;
     }
 
-    public MLPoly(Field field, ArrayList<Tuple<ArrayList<Boolean>, BigInteger>> terms) {
-        this.varNo = terms.get(0).x.size();
-        this.field = field;
-        this.terms = terms;
+
+    // Constancy checks
+    public Boolean isConstant() {
+        return (varNo == 0);
+    }
+
+    public Boolean isUnivariate() {
+        return (varNo == 1);
     }
 
 
-    // Identity checks
-
-    public Boolean is_monomial() {
-        return (this.terms.size() == 1);
+    // Basic parameters
+    public Boolean equals(MLPoly m) {
+        return (this.varNo == m.varNo) && (this.prime.equals(m.prime)) && (this.terms.equals(m.terms));
     }
 
-    public Boolean is_constant() {
-        return (this.is_monomial()) && !(this.terms.get(0).x.contains(true));
+    public Boolean fieldCheck(MLPoly m) {
+        return (this.prime.equals(m.prime));
     }
 
-    
-    // Size checks
+    public Boolean varNoCheck(MLPoly m) {
+        return (this.varNo == m.varNo);
+    }
 
-    public Integer degree() {
-        Integer counter1 = 0;
 
-        for (Tuple<ArrayList<Boolean>, BigInteger> i : this.terms) {
-            Integer counter2 = 0;
-            for (Boolean j : i.x) {
-                if (j.equals(true)) {
-                    counter2++;
+    // Operations
+
+    // Addition
+    public MLPoly add(MLPoly m) throws Exception {
+        if (!this.fieldCheck(m)) {
+            throw new Exception("Polynomials defined over different fields!");
+        }
+        else if (!this.varNoCheck(m)) {
+            throw new Exception("Polynomials have different variable numbers!");
+        }
+        else {
+
+            // Init new HashMap
+            HashMap<String, BigInteger> newMap = new HashMap<String, BigInteger>();
+            newMap.putAll(this.terms);
+
+            // Add elements
+            for (Map.Entry<String, BigInteger> e : m.terms.entrySet()) {
+                String key = e.getKey();
+                BigInteger value = e.getValue();
+
+                if (newMap.containsKey(key)) {
+                    newMap.put(key, value.add(this.terms.get(key).mod(prime)));
+                }
+                else {
+                    newMap.put(key, value);
+                }
+            }            
+
+            // Return new MLPoly
+            return new MLPoly(this.varNo, this.prime, newMap);
+        }
+    }
+
+    // Additive Inverse
+    public MLPoly addInv() throws Exception{
+
+        // Init new HashMap
+        HashMap<String, BigInteger> newMap = new HashMap<String, BigInteger>();
+        
+        // Invert elements and put
+        for (Map.Entry<String, BigInteger> e : this.terms.entrySet()) {
+            newMap.put(e.getKey(), e.getValue().negate());
+        }
+
+        return new MLPoly(this.varNo, this.prime, newMap);
+    }
+
+    // Subtraction
+    public MLPoly sub(MLPoly m) throws Exception {
+        return this.add(m.addInv());
+    }
+
+    // Multiplication
+    public MLPoly multiply(MLPoly m) throws Exception {
+        if (!this.fieldCheck(m)) {
+            throw new Exception("Polynomials defined over different fields!");
+        }
+        else if (!this.varNoCheck(m)) {
+            throw new Exception("Polynomials have different variable numbers!");
+        } else {
+
+            // Init new HashMap
+            HashMap<String, BigInteger> newMap = new HashMap<String, BigInteger>();
+
+            // Multiply elements
+            for (Map.Entry<String, BigInteger> term1 : this.terms.entrySet()) {
+                for (Map.Entry<String, BigInteger> term2 : m.terms.entrySet()) {
+                    String multTerm = multiply_monomial(term1.getKey(), term2.getKey());
+
+                    if (multTerm == null) { throw new Exception("Multiplication does not yield a multilinear polynomial!"); }
+                    BigInteger coeff = term1.getValue().multiply(term2.getValue()).mod(this.prime);
+                    
+                    if (newMap.containsKey(multTerm)) { BigInteger oldCoeff = newMap.get(multTerm); newMap.put(multTerm, oldCoeff.add(coeff).mod(this.prime)); }
+                    else { newMap.put(multTerm, coeff); }
                 }
             }
-            counter1 = Math.max(counter1, counter2);
+
+            // Return new MLPoly
+            return new MLPoly(this.varNo, this.prime, newMap);
         }
-        return counter1;
     }
 
-    public Integer size() {
-        Integer counter1 = 0;
+    // Multiply two monomials, returns null if resulting terms is not multilinear
+    private String multiply_monomial(String term1, String term2) {
+        String newTerm = "";
+        for (int i = 0; i < term1.length(); i++) {
+            if (term1.charAt(i) == '1' && term2.charAt(i) == '1') { return null; }
+            else { newTerm += (term1.charAt(i) == '1' || term2.charAt(i) == '1') ? "1" : "0"; }
+        }
+        return newTerm;
+    }
 
-        for (Tuple<ArrayList<Boolean>, BigInteger> i : this.terms) {
-            Integer counter2 = 0;
-            for (Boolean j : i.x) {
-                if (j.equals(true)) {
-                    counter2++;
+    // Evaluation
+    public BigInteger evaluate(BigInteger[] b) throws Exception {
+
+        // Check varNo
+        if (this.varNo != b.length) {
+            throw new Exception("Input array does not match number of variables!");
+        }
+
+        // Evaluate at point
+        else {
+
+            // Define counters to iterate over
+            BigInteger zero = new BigInteger("0");
+            BigInteger unit = new BigInteger("1");
+
+            // First iteration over summation
+            for (Map.Entry<String, BigInteger> e : this.terms.entrySet()) {
+                String key = e.getKey();
+                BigInteger value = e.getValue();
+
+                // Second iteration over multiplication
+                for (int i = 0; i < key.length(); i++) {
+                    if (key.charAt(i) == '1') {
+                        unit = unit.multiply(b[i]).mod(prime);
+                    }
                 }
+
+                // Coefficient application
+                unit = unit.multiply(value);
+
+                // Sum and reset
+                zero.add(unit);
+                unit = new BigInteger("1");
             }
-            counter1 += counter2;
+
+            return zero;
         }
-        return counter1;
     }
 
-    // Evaluations
-    
-    public BigInteger evaluate(BigInteger[] vector) {
-        // terrible O(n^2), unoptimized evaluation
-
-        BigInteger result = new BigInteger("0");
-        for (Tuple<ArrayList<Boolean>, BigInteger> i : this.terms) {
-            BigInteger prod = new BigInteger("0");
-            for (Integer j = 0; j < vector.length; j++) {
-                prod = this.field.multiply(prod, this.field.bool_mult(vector[j], i.x.get(j)));
-            }
-            result = this.field.add(result, prod);
-        }
-        return result;
-    }
 }
-
