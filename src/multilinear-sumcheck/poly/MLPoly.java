@@ -1,11 +1,8 @@
 package poly;
 
 import java.math.BigInteger;
-import java.security.spec.ECGenParameterSpec;
 import java.util.HashMap;
 import java.util.Map;
-
-import util.Tuple;
 
 public class MLPoly implements Poly {
 
@@ -113,4 +110,43 @@ public class MLPoly implements Poly {
     }
 
     // Multiplication
+
+
+    // Evaluation
+    public BigInteger evaluate(BigInteger[] b) throws Exception {
+
+        // Check varNo
+        if (this.varNo != b.length) {
+            throw new Exception("Input array does not match number of variables!");
+        }
+
+        // Evaluate at point
+        else {
+
+            // Define counters to iterate over
+            BigInteger zero = new BigInteger("0");
+            BigInteger unit = new BigInteger("1");
+
+            // First iteration over summation
+            for (Map.Entry<Boolean[], BigInteger> e : this.terms.entrySet()) {
+                Boolean[] key = e.getKey();
+                BigInteger value = e.getValue();
+
+                // Second iteration over multiplication
+                for (int i = 0; i < key.length; i++) {
+                    if (key[i]) {
+                        unit = unit.multiply(b[i]).mod(prime);
+                    }
+                }
+
+                // Coefficient application
+                unit = unit.multiply(value);
+
+                // Sum and reset
+                zero.add(unit);
+                unit = new BigInteger("1");
+            }
+        }
+    }
+
 }
