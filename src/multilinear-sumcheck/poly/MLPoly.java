@@ -188,4 +188,22 @@ public class MLPoly implements Poly {
         }
     }
 
+    // Display
+    @Override
+    public String toString() {
+        String poly = "";
+        for (Map.Entry<String, BigInteger> e : this.terms.entrySet()) {
+            String key = e.getKey();
+            BigInteger value = e.getValue();
+
+            poly += value;
+
+            for (int i = 0; i < key.length(); i++) {
+                if (key.charAt(i) == '1') { poly += " x" + (i+1); }
+            }
+
+            poly += " ";
+        }
+        return poly;
+    }
 }
