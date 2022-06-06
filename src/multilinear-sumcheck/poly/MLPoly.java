@@ -9,15 +9,15 @@ public class MLPoly implements Poly {
     // Initial Parameters
     public Integer varNo;
     public BigInteger prime;
-    public HashMap<Boolean[], BigInteger> terms;
+    public HashMap<String, BigInteger> terms;
 
 
     // Constructor
-    public MLPoly(Integer v, BigInteger p, HashMap<Boolean[], BigInteger> t) throws Exception {
+    public MLPoly(Integer v, BigInteger p, HashMap<String, BigInteger> t) throws Exception {
 
         // Check if terms are correctly defined
-        for (Boolean[] i : t.keySet()) {
-            if (i.length > varNo) {
+        for (String i : t.keySet()) {
+            if (i.length() > varNo) {
                 throw new Exception("Incorrect variable number!");
             }
             if (t.get(i).compareTo(p) == 1) {
@@ -69,12 +69,12 @@ public class MLPoly implements Poly {
         else {
 
             // Init new HashMap
-            HashMap<Boolean[], BigInteger> newMap = new HashMap<Boolean[], BigInteger>();
+            HashMap<String, BigInteger> newMap = new HashMap<String, BigInteger>();
             newMap.putAll(this.terms);
 
             // Add elements
-            for (Map.Entry<Boolean[], BigInteger> e : m.terms.entrySet()) {
-                Boolean[] key = e.getKey();
+            for (Map.Entry<String, BigInteger> e : m.terms.entrySet()) {
+                String key = e.getKey();
                 BigInteger value = e.getValue();
 
                 if (newMap.containsKey(key)) {
@@ -94,10 +94,10 @@ public class MLPoly implements Poly {
     public MLPoly addInv() throws Exception{
 
         // Init new HashMap
-        HashMap<Boolean[], BigInteger> newMap = new HashMap<Boolean[], BigInteger>();
+        HashMap<String, BigInteger> newMap = new HashMap<String, BigInteger>();
         
         // Invert elements and put
-        for (Map.Entry<Boolean[], BigInteger> e : this.terms.entrySet()) {
+        for (Map.Entry<String, BigInteger> e : this.terms.entrySet()) {
             newMap.put(e.getKey(), e.getValue().negate());
         }
 
@@ -110,7 +110,44 @@ public class MLPoly implements Poly {
     }
 
     // Multiplication
+    public MLPoly multiply(MLPoly m) throws Exception {
+        if (!this.fieldCheck(m)) {
+            throw new Exception("Polynomials defined over different fields!");
+        }
+        else if (!this.varNoCheck(m)) {
+            throw new Exception("Polynomials have different variable numbers!");
+        } else {
 
+            // Init new HashMap
+            HashMap<String, BigInteger> newMap = new HashMap<String, BigInteger>();
+
+            // Multiply elements
+            for (Map.Entry<String, BigInteger> term1 : this.terms.entrySet()) {
+                for (Map.Entry<String, BigInteger> term2 : m.terms.entrySet()) {
+                    String multTerm = multiply_monomial(term1.getKey(), term2.getKey());
+
+                    if (multTerm == null) { throw new Exception("Multiplication does not yield a multilinear polynomial!"); }
+                    BigInteger coeff = term1.getValue().multiply(term2.getValue()).mod(this.prime);
+                    
+                    if (newMap.containsKey(multTerm)) { BigInteger oldCoeff = newMap.get(multTerm); newMap.put(multTerm, oldCoeff.add(coeff).mod(this.prime)); }
+                    else { newMap.put(multTerm, coeff); }
+                }
+            }
+
+            // Return new MLPoly
+            return new MLPoly(this.varNo, this.prime, newMap);
+        }
+    }
+
+    // Multiply two monomials, returns null if resulting terms is not multilinear
+    private String multiply_monomial(String term1, String term2) {
+        String newTerm = "";
+        for (int i = 0; i < term1.length(); i++) {
+            if (term1.charAt(i) == '1' && term2.charAt(i) == '1') { return null; }
+            else { newTerm += (term1.charAt(i) == '1' || term2.charAt(i) == '1') ? "1" : "0"; }
+        }
+        return newTerm;
+    }
 
     // Evaluation
     public BigInteger evaluate(BigInteger[] b) throws Exception {
@@ -128,13 +165,13 @@ public class MLPoly implements Poly {
             BigInteger unit = new BigInteger("1");
 
             // First iteration over summation
-            for (Map.Entry<Boolean[], BigInteger> e : this.terms.entrySet()) {
-                Boolean[] key = e.getKey();
+            for (Map.Entry<String, BigInteger> e : this.terms.entrySet()) {
+                String key = e.getKey();
                 BigInteger value = e.getValue();
 
                 // Second iteration over multiplication
-                for (int i = 0; i < key.length; i++) {
-                    if (key[i]) {
+                for (int i = 0; i < key.length(); i++) {
+                    if (key.charAt(i) == '1') {
                         unit = unit.multiply(b[i]).mod(prime);
                     }
                 }
