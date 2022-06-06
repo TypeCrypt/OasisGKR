@@ -80,5 +80,21 @@ public class MLPoly implements Poly {
         }
         return counter1;
     }
+
+    // Evaluations
+    
+    public BigInteger evaluate(BigInteger[] vector) {
+        // terrible O(n^2), unoptimized evaluation
+
+        BigInteger result = new BigInteger("0");
+        for (Tuple<ArrayList<Boolean>, BigInteger> i : this.terms) {
+            BigInteger prod = new BigInteger("0");
+            for (Integer j = 0; j < vector.length; j++) {
+                prod = this.field.multiply(prod, this.field.bool_mult(vector[j], i.x.get(j)));
+            }
+            result = this.field.add(result, prod);
+        }
+        return result;
+    }
 }
 
