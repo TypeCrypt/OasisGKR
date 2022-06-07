@@ -28,7 +28,7 @@ public class MLExtension {
         // Initial parameters
         arr[0] = new BigInteger[2];
 
-        arr[0][0] = unit.subtract(r[0]);
+        arr[0][0] = unit.subtract(r[0]).mod(prime);
         arr[0][1] = r[0];
 
         for (int i = 1; i < order; i++) {
@@ -38,15 +38,15 @@ public class MLExtension {
 
             // sift through each layer
             for (int j = 0; j < (2^i); j+=2) {
-                arr[i][j] = arr[i-1][j/2].multiply(unit.subtract(r[i]));
-                arr[i][j+1] = arr[i-1][j/2].multiply(r[i]);
+                arr[i][j] = arr[i-1][j/2].multiply(unit.subtract(r[i])).mod(prime);
+                arr[i][j+1] = arr[i-1][j/2].multiply(r[i]).mod(prime);
             }
         }
         
         // Dot product with hypercube
         BigInteger result = zero;
         for (int i = 0; i < (2^order); i++) {
-            result = result.add(arr[order-1][i].multiply(hypercube[i]));
+            result = result.add(arr[order-1][i].multiply(hypercube[i])).mod(prime);
         }
 
         return result;
