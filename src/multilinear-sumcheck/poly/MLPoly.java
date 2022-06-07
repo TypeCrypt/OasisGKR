@@ -150,6 +150,8 @@ public class MLPoly implements Poly {
     }
 
     // Evaluation
+
+    // Total Evaluation
     public BigInteger evaluate(BigInteger[] b) throws Exception {
 
         // Check varNo
@@ -188,6 +190,7 @@ public class MLPoly implements Poly {
         }
     }
 
+    // Partial Evaluation
     public MLPoly partialEval(BigInteger[] b) throws Exception {
 
         // initialize product counter
@@ -196,7 +199,7 @@ public class MLPoly implements Poly {
         // initialize new hash
         HashMap<String, BigInteger> newHash = new HashMap<String, BigInteger>();
 
-        // First iteration over summation
+        // First iteration over char[] 
         for (Map.Entry<String, BigInteger> e : this.terms.entrySet()) {
             String key = e.getKey();
             BigInteger value = e.getValue();
