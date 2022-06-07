@@ -188,4 +188,38 @@ public class MLPoly implements Poly {
         }
     }
 
+    public MLPoly partialEval(BigInteger[] b) throws Exception {
+
+        // initialize product counter
+        BigInteger unit = new BigInteger("1");
+
+        // initialize new hash
+        HashMap<String, BigInteger> newHash = new HashMap<String, BigInteger>();
+
+        // First iteration over summation
+        for (Map.Entry<String, BigInteger> e : this.terms.entrySet()) {
+            String key = e.getKey();
+            BigInteger value = e.getValue();
+
+            char[] newKey = key.toCharArray();
+
+            // Second iteration over multiplication
+            for (int i = 0; i < b.length; i++) {
+                if (key.charAt(i) == '1') {
+                    unit = unit.multiply(b[i]).mod(prime);
+                    newKey[i] = '0';
+                }
+            }
+
+            // Coefficient application
+            unit = unit.multiply(value);
+
+            // add and reset
+            newHash.put(newKey.toString(), unit);
+            unit = new BigInteger("1");
+        }
+
+        return new MLPoly((varNo - b.length), prime, newHash);
+    }
+
 }
